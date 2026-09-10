@@ -1,0 +1,3 @@
+pymc-marketing
+pandas
+pyyaml

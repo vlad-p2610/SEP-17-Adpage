@@ -11,7 +11,7 @@ from pymc_marketing.paths import data_dir
 
 
 
-class PYMC(MMMAbs):
+class PYMC(MMMAbs.MMMAbs):
     def __init__(self, df):
 
         super().__init__(df)
@@ -34,5 +34,19 @@ class PYMC(MMMAbs):
 
     def getPrediction(self):
         pass
+
+    def extractPosterior(self, ofWhat):
+        pass
+
+    def extractContribution(self):
+        pass
+
+    def extractContributions(self):
+        pass
+
+    def extractResponseCurves(self):
+        pass
+
+    
 
 
