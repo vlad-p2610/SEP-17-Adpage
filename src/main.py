@@ -30,12 +30,16 @@ def main():
     if not CHpath.is_absolute():
         CHpath = Path(os.getcwd()) / CHpath
 
-    df = dataloader.load(args.model, CHpath, config)
+    dl = dataloader.DL(args.model, CHpath, config)
+    df = dl.load()
 
     if args.model == "pymc":
         model = PYMC(df, config)
     elif args.model == "meridian":
         pass
+
+    print("DEBUG: finished!")
+
 
 if __name__ == "__main__":
     main()
