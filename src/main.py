@@ -1,4 +1,4 @@
-import pymcmodel
+from pymcmodel import PYMC
 import dataloader
 import argparse
 import pandas as pd
@@ -14,7 +14,9 @@ def main():
     df = dataloader.load(args.model)
 
     if args.model == "pymc":
-        pymcmodel.
+        model = PYMC(df)
+    elif args.model == "meridian":
+        pass
 
 if __name__ == "__main__":
     main()
