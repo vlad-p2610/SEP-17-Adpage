@@ -1,0 +1,3 @@
+pymc:
+  lamda: 25
+  sigma: 1

@@ -5,9 +5,10 @@ class MMMAbs(ABC):
     """
         Abstract class for MMM wrapper. Meant to satisft req MMM-01 (framework-agnostic adapter interface for models).
     """
-    def __init__(self, df):
+    def __init__(self, df, config):
         self.df = df
         self.fitted = False
+        self.config = config
 
 
 

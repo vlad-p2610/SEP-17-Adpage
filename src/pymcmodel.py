@@ -12,9 +12,9 @@ from pymc_marketing.paths import data_dir
 
 
 class PYMC(MMMAbs.MMMAbs):
-    def __init__(self, df):
+    def __init__(self, df, config):
 
-        super().__init__(df)
+        super().__init__(df, config)
         
         self.model = MMM(
             adstock=GeometricAdstock(l_max=8),
@@ -29,20 +29,26 @@ class PYMC(MMMAbs.MMMAbs):
             yearly_seasonality=2,
         )
 
+
     def fit(self):
         pass
+
 
     def getPrediction(self):
         pass
 
+
     def extractPosterior(self, ofWhat):
         pass
+
 
     def extractContribution(self):
         pass
 
+
     def extractContributions(self):
         pass
+
 
     def extractResponseCurves(self):
         pass
