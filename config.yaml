@@ -1,3 +1,5 @@
 pymc:
   lamda: 25
   sigma: 1
+
+os: "windows"

@@ -1,5 +1,4 @@
 
-
 class DL:
     """Reads the clickhouse, puts it into a pandas dataframe. Does preproscessing."""
 
@@ -11,4 +10,9 @@ class DL:
 
     def load(self):
         """load into a pd dataframe suitable for the model, according to cfg"""
-        pass
+        if self.config[os] == "windows":
+            ...
+        elif self.config[os] == "linux":
+            ...
+        else:
+            print("os not supported")
