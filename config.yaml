@@ -1,3 +1,15 @@
 pymc:
-  lamda: 25
-  sigma: 1
+  adstock: 0.8
+  X_columns:
+    - tulip
+    - banana
+  y_columns:
+    - revenue
+    - magenta
+merchant_model:
+  months: 7
+  channels: 3
+  ro: 0.5 #interchanel spend correlation
+
+dataloader:
+  source: "chdb" #chdb or csv

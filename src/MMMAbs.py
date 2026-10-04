@@ -5,8 +5,9 @@ class MMMAbs(ABC):
     """
         Abstract class for MMM wrapper. Meant to satisft req MMM-01 (framework-agnostic adapter interface for models).
     """
-    def __init__(self, df, config):
-        self.df = df
+    def __init__(self, X, y, config):
+        self.X = X
+        self.y = y
         self.fitted = False
         self.config = config
 
@@ -31,3 +32,8 @@ class MMMAbs(ABC):
     @abstractmethod
     def extractResponseCurves(self):
         """extract response curves"""
+
+    @abstractmethod
+    def extractDiagnostics(self):
+        """extract Diagnostics"""
+    
