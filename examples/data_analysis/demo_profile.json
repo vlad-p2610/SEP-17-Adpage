@@ -1,0 +1,155 @@
+{
+  "report_version": 1,
+  "rows": 32,
+  "schema": {
+    "company": "company_id",
+    "date": "date_week",
+    "target": "revenue",
+    "channels": [
+      "search_spend",
+      "social_spend"
+    ],
+    "controls": [],
+    "date_format": "%Y-%m-%d",
+    "frequency": "W-MON",
+    "correlation_warning": 0.9
+  },
+  "missing_columns": [],
+  "status": "requires_review",
+  "columns": {
+    "revenue": {
+      "missing": 1,
+      "nonnumeric": 0,
+      "nonfinite": 0,
+      "negative": 0
+    },
+    "search_spend": {
+      "missing": 0,
+      "nonnumeric": 0,
+      "nonfinite": 0,
+      "negative": 1
+    },
+    "social_spend": {
+      "missing": 0,
+      "nonnumeric": 0,
+      "nonfinite": 0,
+      "negative": 0
+    }
+  },
+  "companies": [
+    {
+      "company": "synthetic_a",
+      "rows": 17,
+      "candidate_rows": 13,
+      "invalid_value_rows": 2,
+      "duplicate_key_rows": 2,
+      "observed_periods": 16,
+      "candidate_periods": 13,
+      "start": "2025-01-06T00:00:00+00:00",
+      "end": "2025-04-21T00:00:00+00:00",
+      "missing_candidate_periods": 3,
+      "off_grid_periods": 0,
+      "constant_channels": [],
+      "high_channel_correlations": [
+        {
+          "left": "search_spend",
+          "right": "social_spend",
+          "pearson_r": 1.0
+        }
+      ],
+      "numeric_summary": {
+        "revenue": {
+          "min": 1000.0,
+          "max": 1450.0,
+          "mean": 1237.6923076923076,
+          "distinct_values": 13,
+          "zero_fraction": 0.0
+        },
+        "search_spend": {
+          "min": 100.0,
+          "max": 250.0,
+          "mean": 179.23076923076925,
+          "distinct_values": 13,
+          "zero_fraction": 0.0
+        },
+        "social_spend": {
+          "min": 200.0,
+          "max": 500.0,
+          "mean": 358.4615384615385,
+          "distinct_values": 13,
+          "zero_fraction": 0.0
+        }
+      },
+      "status": "requires_review"
+    },
+    {
+      "company": "synthetic_b",
+      "rows": 15,
+      "candidate_rows": 15,
+      "invalid_value_rows": 0,
+      "duplicate_key_rows": 0,
+      "observed_periods": 15,
+      "candidate_periods": 15,
+      "start": "2025-01-06T00:00:00+00:00",
+      "end": "2025-04-21T00:00:00+00:00",
+      "missing_candidate_periods": 1,
+      "off_grid_periods": 0,
+      "constant_channels": [
+        "social_spend"
+      ],
+      "high_channel_correlations": [],
+      "numeric_summary": {
+        "revenue": {
+          "min": 1000.0,
+          "max": 1450.0,
+          "mean": 1232.0,
+          "distinct_values": 15,
+          "zero_fraction": 0.0
+        },
+        "search_spend": {
+          "min": 100.0,
+          "max": 250.0,
+          "mean": 177.33333333333334,
+          "distinct_values": 15,
+          "zero_fraction": 0.0
+        },
+        "social_spend": {
+          "min": 50.0,
+          "max": 50.0,
+          "mean": 50.0,
+          "distinct_values": 1,
+          "zero_fraction": 0.0
+        }
+      },
+      "status": "requires_review"
+    }
+  ],
+  "record_findings": [
+    {
+      "row_position": 3,
+      "field": "revenue",
+      "reason": "missing_required_value"
+    },
+    {
+      "row_position": 5,
+      "field": "search_spend",
+      "reason": "negative_channel_value"
+    },
+    {
+      "row_position": 9,
+      "field": "company_id,date_week",
+      "reason": "ambiguous_duplicate_key"
+    },
+    {
+      "row_position": 31,
+      "field": "company_id,date_week",
+      "reason": "ambiguous_duplicate_key"
+    }
+  ],
+  "missing_company_rows": 0,
+  "invalid_date_rows": 0,
+  "invalid_value_rows": 2,
+  "duplicate_key_rows": 2,
+  "candidate_rows": 28,
+  "excluded_candidate_rows": 4
+}
