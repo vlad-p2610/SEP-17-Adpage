@@ -43,6 +43,7 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
     all ambiguous company/date duplicates. This is a diagnostic count, not an
     approved cleaning policy or an assertion that a model is ready to fit.
     """
+    # Collect the mapped columns and initialize the diagnostic report.
     required = [schema.company, schema.date, schema.target, *schema.channels, *schema.controls]
     report = {"report_version": 1, "rows": len(df), "schema": vars(schema),
               "missing_columns": [c for c in required if c not in df.columns],
@@ -50,12 +51,14 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
     if include_record_findings:
         report["record_findings"] = []
 
+    # Optionally record row positions and exclusion reasons without copying raw values.
     def record_finding(mask, field_name, reason):
         if include_record_findings:
             report["record_findings"].extend(
                 {"row_position": int(position), "field": field_name, "reason": reason}
                 for position in np.flatnonzero(mask.to_numpy()))
 
+    # Stop if the column structure is ambiguous or required columns are missing.
     if df.columns.has_duplicates:
         raise ValueError("Input column names must be unique.")
     if report["missing_columns"]:
@@ -64,6 +67,7 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
 
     # Reset a copied frame so repeated input index labels cannot affect masks.
     work = df[required].copy().reset_index(drop=True)
+    # Mark missing company identifiers and invalid dates as ineligible for candidate rows.
     missing_company = work[schema.company].isna() | work[schema.company].astype(str).str.strip().eq("")
     dates = pd.to_datetime(work[schema.date], format=schema.date_format, errors="coerce", utc=True)
     invalid = missing_company | dates.isna()
@@ -71,6 +75,7 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
     report["invalid_date_rows"] = int(dates.isna().sum())
     record_finding(missing_company, schema.company, "missing_company_identifier")
     record_finding(dates.isna(), schema.date, "missing_or_invalid_date")
+    # Check numeric fields for missing, nonnumeric and nonfinite values.
     numeric_columns = [schema.target, *schema.channels, *schema.controls]
     numeric = pd.DataFrame(index=work.index)
     for column in numeric_columns:
@@ -85,15 +90,19 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
         record_finding(work[column].isna(), column, "missing_required_value")
         record_finding(values.isna() & work[column].notna(), column, "nonnumeric_value")
         record_finding(nonfinite, column, "nonfinite_value")
+        # Negative channel values are invalid; negative target/control values are only reported.
         if column in schema.channels:
             bad |= negative
             record_finding(negative, column, "negative_channel_value")
+        # Combine field failures into a row mask; the source dataframe stays unchanged.
         invalid |= bad
         numeric[column] = values.where(~bad)
 
+    # Flag every copy of a duplicate company/date key rather than choosing a row to keep.
     keys = pd.DataFrame({"company": work[schema.company], "date": dates})
     duplicate = keys.duplicated(keep=False) & ~missing_company & dates.notna()
     record_finding(duplicate, f"{schema.company},{schema.date}", "ambiguous_duplicate_key")
+    # Exclude invalid or duplicate rows from candidate diagnostics, without deleting source rows.
     candidate = ~(invalid | duplicate)
     report["invalid_value_rows"] = int(invalid.sum())
     report["duplicate_key_rows"] = int(duplicate.sum())
@@ -102,16 +111,19 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
     if not candidate.any():
         report["status"] = "blocked_no_candidate_rows"
 
+    # Analyze companies separately, using only candidate rows for numeric summaries.
     for company, group in work.loc[~missing_company].groupby(schema.company, sort=False, observed=True):
         indices = group.index
         usable = indices[candidate.loc[indices]]
         observed = pd.DatetimeIndex(dates.loc[indices].dropna().unique()).sort_values()
         usable_dates = pd.DatetimeIndex(dates.loc[usable].unique()).sort_values()
+        # Check the expected calendar within observed coverage for gaps and off-grid dates.
         expected = pd.DatetimeIndex([])
         if len(observed):
             expected = pd.date_range(observed.min(), observed.max(), freq=schema.frequency)
         missing_periods = expected.difference(usable_dates)
         off_grid = observed.difference(expected)
+        # Summarize each numeric field using candidate rows for this company.
         values = numeric.loc[usable]
         stats = {}
         for column in numeric_columns:
@@ -124,6 +136,7 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
                              "mean": mean,
                              "distinct_values": int(series.nunique()),
                              "zero_fraction": float(series.eq(0).mean()) if len(series) else None}
+        # Flag channels with no variation and strongly correlated channel pairs.
         constant = [c for c in schema.channels if values[c].nunique() <= 1]
         correlations = []
         for left, right in combinations(schema.channels, 2):
@@ -133,6 +146,7 @@ def profile_dataframe(df: pd.DataFrame, schema: AnalysisSchema, *, include_recor
                     values[right] / values[right].abs().max()))
                 if np.isfinite(corr) and abs(corr) >= schema.correlation_warning:
                     correlations.append({"left": left, "right": right, "pearson_r": corr})
+        # Store the company's diagnostics; candidate counts do not imply MMM suitability.
         report["companies"].append({
             "company": str(company), "rows": len(group), "candidate_rows": len(usable),
             "invalid_value_rows": int(invalid.loc[indices].sum()),
