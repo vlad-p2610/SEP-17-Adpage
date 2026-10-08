@@ -1,0 +1,10 @@
+# Demonstration mapping, not AdPage's approved input schema.
+company: company_id
+date: date_week
+target: revenue
+channels: [search_spend, social_spend]
+controls: []
+date_format: '%Y-%m-%d'
+frequency: W-MON
+# Exploratory warning only; not a model acceptance criterion.
+correlation_warning: 0.9

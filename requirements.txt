@@ -1,3 +1,4 @@
 pymc-marketing
 pandas
+numpy
 pyyaml

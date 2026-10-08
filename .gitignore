@@ -1,2 +1,6 @@
 .venv/
 src/__pycache__/
+__pycache__/
+# Local client extracts and reports must not be committed.
+data/local/
+analysis-output/
