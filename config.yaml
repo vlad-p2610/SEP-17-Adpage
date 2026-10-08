@@ -1,3 +1,21 @@
+data:
+  date_column: date_week
+  target_column: revenue
+  channel_columns: [x1, x2]
+  control_columns: [event_1, event_2, t]
+
 pymc:
-  lamda: 25
-  sigma: 1
+  adstock:
+    type: geometric
+    l_max: 8
+  saturation:
+    type: logistic
+  yearly_seasonality: 2
+  sampler:
+    draws: 1000
+    tune: 1000
+    chains: 4
+    target_accept: 0.9
+    random_seed: 42
+
+    
