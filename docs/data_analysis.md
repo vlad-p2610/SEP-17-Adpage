@@ -141,33 +141,6 @@ Issue #5 remains open: completion requires running on approved real data,
 summarizing coverage/quality across companies and agreeing the schema and
 preprocessing recommendations with the team.
 
-## Publication checkpoint
-
-The remote `data-analysis/profiling` branch was created and issue #5's project
-status was moved to In progress. The code increment is committed locally. As of
-this checkpoint, uploads through both Git-tree and file-content APIs, and the
-issue-description update, were rejected with GitHub's 403 "Resource not accessible
-by integration" response. There is no draft PR yet, and the remote branch still
-contains only its original base commit. The integration needs access to write to
-`vlad-p2610/SEP-17-Adpage`; repository/account integration setup may require the
-owner's action. Do not repeatedly retry denied writes without an access change.
-
-A continuation is scheduled for 8 October at 02:30 Europe/Amsterdam. Resume from
-the newest local commit or the latest published branch if access is corrected.
-Compare the branch before writing; preserve the loader and model-wrapper files.
-Publish the changed files as one commit on this branch, then create a draft PR
-with the following review description (update it if implementation changes):
-
-> Company data currently reaches unfinished loader/model scaffolding without a
-> profiling step. This adds a non-mutating pandas profiler for mapped company/time
-> data, reporting invalid values, ambiguous duplicate keys, time gaps, numeric
-> summaries, constant channels and high channel correlations. A synthetic demo,
-> JSON/Markdown outputs and meeting notes make it usable before the ClickHouse
-> loader is ready. Related to #5; the issue remains open for approved real-data
-> analysis and agreed schema/preprocessing decisions. Validation: 16 tests pass
-> with warnings treated as errors, plus a 500-company/52,000-row synthetic smoke
-> check. No client data is included and no model is fitted.
-
 ## Primary references
 
 - [PyMC-Marketing MMM API](https://www.pymc-marketing.io/en/stable/api/generated/pymc_marketing.mmm.mmm.MMM.html): explicit date, channel, target and optional control columns.
